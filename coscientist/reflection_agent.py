@@ -390,14 +390,16 @@ async def _write_assumption_research_report(assumption_evaluation_query: str) ->
     str
         The research report
     """
-    researcher = GPTResearcher(
-        query=assumption_evaluation_query,
-        report_type="research_report",
-        report_format="markdown",
-        verbose=False,
-        tone=Tone.Objective,
-        config_path=os.path.join(os.path.dirname(__file__), "researcher_config.json"),
-    )
+    args = {
+        'query': assumption_evaluation_query,
+        'report_type': "research_report",
+        'report_format': "markdown",
+        'verbose': False,
+        'tone': Tone.Objective,
+    }
+    if not os.environ.get("COSCIENTIST_DEV"):
+        args['config_path'] = os.path.join(os.path.dirname(__file__), "researcher_config.json")
+    researcher = GPTResearcher(**args)
 
     # Conduct research and generate report
     _ = await researcher.conduct_research()

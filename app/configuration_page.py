@@ -1,10 +1,12 @@
 import multiprocessing
 import time
+import os
 
 import streamlit as st
 from langchain_anthropic import ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
 
 # Import the background process functions
 from background import (
@@ -20,21 +22,40 @@ from coscientist.configuration_agent import ConfigurationChatManager
 # Import coscientist framework components
 from coscientist.global_state import CoscientistState
 
+# Generally reasoning models are better suited for the scientific reasoning
+# tasks entailed by the Coscientist system.
+_SMARTER_REMOTE_LLM_POOL = {
+    "o3": ChatOpenAI(model="o3", max_tokens=50_000, max_retries=3),
+    "Gemini 2.5 Pro": ChatGoogleGenerativeAI(
+        model="gemini-2.5-pro",
+        temperature=1.0,
+        max_retries=3,
+        max_tokens=50_000,
+    ),
+    "Claude Sonnet 4": ChatAnthropic(
+        model="claude-sonnet-4-20250514", max_tokens=50_000, max_retries=3
+    ),
+}
+_SMARTER_LOCAL_LLM_POOL = {
+    "Cogito 14b": ChatOllama(
+	model="cogito:14b",
+        validate_model_on_init=True,
+	num_predict=50000,
+    ),
+    "Cogito 32b": ChatOllama(
+        model="cogito:32b",
+        validate_model_on_init=True,
+        num_predict=50000,
+    ),
+
+}
+
+_SMARTER_LLM_POOL = _SMARTER_LOCAL_LLM_POOL if os.environ.get("COSCIENTIST_DEV") else _SMARTER_REMOTE_LLM_POOL
+
 
 def get_llm_options():
     """Get available LLM options for the chat interface."""
-    return {
-        "o3": ChatOpenAI(model="o3", max_tokens=5000, max_retries=3),
-        "Gemini 2.5 Pro": ChatGoogleGenerativeAI(
-            model="gemini-2.5-pro",
-            temperature=1.0,
-            max_retries=3,
-            max_tokens=5000,
-        ),
-        "Claude Sonnet 4": ChatAnthropic(
-            model="claude-sonnet-4-20250514", max_tokens=5000, max_retries=3
-        ),
-    }
+    return _SMARTER_LLM_POOL
 
 
 def display_configuration_page():
@@ -82,7 +103,7 @@ def display_configuration_page():
         selected_model = st.selectbox(
             "Select Language Model:",
             options=list(llm_options.keys()),
-            index=1,  # Default to GPT-4o-mini
+            index=1,  # Default to Gemini 2.5 Pro
             help="Choose the language model for the configuration agent.",
         )
 

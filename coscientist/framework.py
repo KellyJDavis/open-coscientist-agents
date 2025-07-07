@@ -7,8 +7,11 @@ by a supervisor agent.
 import logging
 import math
 import random
+import os
 
 import numpy as np
+from langchain_ollama import ChatOllama
+from langchain_ollama.embeddings import OllamaEmbeddings
 from langchain_anthropic import ChatAnthropic
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -31,7 +34,7 @@ from coscientist.supervisor_agent import build_supervisor_agent
 
 # Generally reasoning models are better suited for the scientific reasoning
 # tasks entailed by the Coscientist system.
-_SMARTER_LLM_POOL = {
+_SMARTER_REMOTE_LLM_POOL = {
     "o3": ChatOpenAI(model="o3", max_tokens=50_000, max_retries=3),
     "gemini-2.5-pro": ChatGoogleGenerativeAI(
         model="gemini-2.5-pro",
@@ -43,7 +46,7 @@ _SMARTER_LLM_POOL = {
         model="claude-sonnet-4-20250514", max_tokens=50_000, max_retries=3
     ),
 }
-_CHEAPER_LLM_POOL = {
+_CHEAPER_REMOTE_LLM_POOL = {
     "o4-mini": ChatOpenAI(model="o4-mini", max_tokens=50_000, max_retries=3),
     "gemini-2.5-flash": ChatGoogleGenerativeAI(
         model="gemini-2.5-flash",
@@ -56,6 +59,31 @@ _CHEAPER_LLM_POOL = {
         model="claude-sonnet-4-20250514", max_tokens=50_000, max_retries=3
     ),
 }
+# Local reasoning models are better suited for the scientific reasoning
+# tasks entailed by the Coscientist system.
+_SMARTER_LOCAL_LLM_POOL = {
+    "cogito-32b": ChatOllama(
+	model="cogito:32b",
+	validate_model_on_init=True,
+	num_predict=50000,
+    ),
+}
+_CHEAPER_LOCAL_LLM_POOL = {
+    "cogito-14b": ChatOllama(
+	model="cogito:14b",
+	validate_model_on_init=True,
+	num_predict=50000,
+    ),
+}
+
+_SMARTER_LLM_POOL = _SMARTER_LOCAL_LLM_POOL if os.environ.get("COSCIENTIST_DEV") else _SMARTER_REMOTE_LLM_POOL
+_CHEAPER_LLM_POOL = _CHEAPER_LOCAL_LLM_POOL if os.environ.get("COSCIENTIST_DEV") else _CHEAPER_REMOTE_LLM_POOL
+_EMBEDDINGS = OllamaEmbeddings(model="nomic-embed-text") if os.environ.get("COSCIENTIST_DEV") else OpenAIEmbeddings(model="text-embedding-3-small", dimensions=256)
+
+_LITERATURE_REVIEW_AGENT_KEY = "cogito-32b" if os.environ.get("COSCIENTIST_DEV") else "claude-sonnet-4-20250514"
+_META_REVIEW_AGENT_KEY = "cogito-14b"  if os.environ.get("COSCIENTIST_DEV") else "gemini-2.5-flash"
+_SUPERVISOR_AGENT_KEY = "cogito-32b" if os.environ.get("COSCIENTIST_DEV") else "claude-sonnet-4-20250514"
+_FINAL_REPORT_AGENT_KEY = "cogito-32b" if os.environ.get("COSCIENTIST_DEV") else "claude-sonnet-4-20250514"
 
 
 class CoscientistConfig:
@@ -90,21 +118,19 @@ class CoscientistConfig:
     def __init__(
         self,
         literature_review_agent_llm: BaseChatModel = _SMARTER_LLM_POOL[
-            "claude-sonnet-4-20250514"
+            _LITERATURE_REVIEW_AGENT_KEY
         ],
         generation_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
         reflection_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
         evolution_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
-        meta_review_agent_llm: BaseChatModel = _CHEAPER_LLM_POOL["gemini-2.5-flash"],
+        meta_review_agent_llm: BaseChatModel = _CHEAPER_LLM_POOL[_META_REVIEW_AGENT_KEY],
         supervisor_agent_llm: BaseChatModel = _SMARTER_LLM_POOL[
-            "claude-sonnet-4-20250514"
+            _SUPERVISOR_AGENT_KEY
         ],
         final_report_agent_llm: BaseChatModel = _SMARTER_LLM_POOL[
-            "claude-sonnet-4-20250514"
+            _FINAL_REPORT_AGENT_KEY
         ],
-        proximity_agent_embedding_model: Embeddings = OpenAIEmbeddings(
-            model="text-embedding-3-small", dimensions=256
-        ),
+        proximity_agent_embedding_model: Embeddings = _EMBEDDINGS,
         specialist_fields: list[str] | None = None,
     ):
         # TODO: Add functionality for overriding GPTResearcher config.

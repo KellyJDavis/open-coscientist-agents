@@ -51,6 +51,8 @@ setup(
             "mypy>=1.0.0",
             "ruff>=0.0.1",
             "pre-commit>=3.0.0",
+	    "langchain-ollama>=0.3.3",
+	    "langchain_mcp_adapters>=0.1.8",
         ],
         "docs": [
             "sphinx>=7.0.0",

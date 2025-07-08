@@ -29,27 +29,29 @@ This implementation uses `Gemini 2.5 Pro`, `Claude Sonnet 4`, and `o3` in collab
 - **Hypothesis Explorer**: Deep dive into individual hypotheses and their reasoning
 - **Tournament Viewer**: Analyze competitive dynamics between ideas
 
-## Installation
+## Installation and Configuration for Remote LLMs
 
-### Prerequisites
+### Installation
+
+#### Prerequisites
 - Python 3.12 or higher
 - A boatload of API keys
 
-### Install from PyPI (Coming Soon)
+#### Install from PyPI (Coming Soon)
 ```bash
 pip install open-coscientist-agents
 ```
 
-### Install from Source
+#### Install from Source
 ```bash
 git clone https://github.com/conradry/open-coscientist-agents.git
 cd open-coscientist-agents
 pip install -e .
 ```
 
-## Configuration
+### Configuration
 
-### Environment Variables
+#### Environment Variables
 Set up your API keys for model providers:
 ```bash
 export OPENAI_API_KEY="your-openai-key"
@@ -68,6 +70,62 @@ export LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
 export LANGSMITH_API_KEY="your-langsmith-api-key"
 export LANGSMITH_PROJECT="your-langsmith-project"
 ```
+
+## Installation and Configuration for Local LLMs
+
+### Installation
+
+#### Prerequisites
+- Python 3.12 or higher
+- ollama version 0.9.5 or higher
+- The ollama models cogito:14b , cogito:32b, and nomic-embed-text:latest
+- A boatload of API keys
+
+#### Install from PyPI (Coming Soon)
+```bash
+pip install open-coscientist-agents[dev]
+```
+
+#### Install from Source
+```bash
+git clone https://github.com/conradry/open-coscientist-agents.git
+cd open-coscientist-agents
+pip install -e .[dev]
+```
+
+### Configuration
+
+#### Environment Variables
+Set up your API keys for model providers:
+```bash
+export GOOGLE_API_KEY="your-google-key"
+```
+
+Set up your API key for Tavily search:
+```bash
+export TAVILY_API_KEY='your-api-key'
+```
+
+Set up keys for the local LLMs
+```bash
+COSCIENTIST_DEV="True"
+OPENAI_API_BASE="http://127.0.0.1:11434/v1"
+OLLAMA_BASE_URL="http://127.0.0.1:11434/"
+FAST_LLM="ollama:cogito:14b"
+SMART_LLM="ollama:cogito:32b"
+STRATEGIC_LLM="ollama:cogito:14b"
+EMBEDDING_PROVIDER="ollama"
+OLLAMA_EMBEDDING_MODEL="nomic-embed-text"
+```
+
+Optional, but highly recommended for monitoring and debugging, set up API keys for LangSmith:
+```bash
+export LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
+export LANGSMITH_API_KEY="your-langsmith-api-key"
+export LANGSMITH_PROJECT="your-langsmith-project"
+```
+
+## Executing First Research Run
 
 ### Web Interface
 Launch the interactive dashboard:

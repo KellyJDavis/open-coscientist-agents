@@ -71,6 +71,23 @@ export LANGSMITH_API_KEY="your-langsmith-api-key"
 export LANGSMITH_PROJECT="your-langsmith-project"
 ```
 
+### Web Interface
+Launch the interactive dashboard:
+```bash
+cd app
+pip install -r viewer_requirements.txt
+streamlit run tournament_viewer.py
+```
+
+Features include:
+- **Configuration Agent**: Set up research parameters
+- **Literature Review**: Explore research foundation
+- **Tournament Rankings**: View hypothesis competition results
+- **Proximity Graph**: Semantic relationship visualization
+- **Meta-Reviews**: Synthesized research insights
+- **Supervisor Decisions**: Workflow orchestration logs
+- **Final Report**: Comprehensive research summary
+
 ## Installation and Configuration for Local LLMs
 
 ### Installation
@@ -125,13 +142,12 @@ export LANGSMITH_API_KEY="your-langsmith-api-key"
 export LANGSMITH_PROJECT="your-langsmith-project"
 ```
 
-## Executing First Research Run
-
 ### Web Interface
 Launch the interactive dashboard:
 ```bash
 cd app
 pip install -r viewer_requirements.txt
+pip install -r viewer_requirements-dev.txt
 streamlit run tournament_viewer.py
 ```
 
@@ -144,7 +160,7 @@ Features include:
 - **Supervisor Decisions**: Workflow orchestration logs
 - **Final Report**: Comprehensive research summary
 
-### Start a research run in Python
+## Start a research run in Python
 ```python
 import asyncio
 from coscientist.framework import CoscientistConfig, CoscientistFramework

@@ -37,15 +37,17 @@ _SMARTER_REMOTE_LLM_POOL = {
     ),
 }
 _SMARTER_LOCAL_LLM_POOL = {
-    "Cogito 14b": ChatOllama(
-	model="cogito:14b",
+    "Gemma3 12b": ChatOllama(
+	model="gemma3:12b",
         validate_model_on_init=True,
 	num_predict=50000,
+        num_ctx=131072,
     ),
-    "Cogito 32b": ChatOllama(
-        model="cogito:32b",
+    "Gemma3 27b": ChatOllama(
+        model="gemma3:27b",
         validate_model_on_init=True,
         num_predict=50000,
+        num_ctx=131072,
     ),
 
 }

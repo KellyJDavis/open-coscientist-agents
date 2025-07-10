@@ -2,7 +2,7 @@
 
 A comprehensive multi-agent system for AI-driven scientific discovery based on Google DeepMind's [AI co-scientist](https://arxiv.org/abs/2502.18864), built with LangGraph and [GPT Researcher](https://github.com/assafelovic/gpt-researcher). The aim is for this system to accelerate scientific research through collaborative AI agents that generate, critique, rank, and evolve scientific hypotheses using tournament-style competition.
 
-This implementation uses `Gemini 2.5 Pro`, `Claude Sonnet 4`, and `o3` in collaboration and competition or in development mode `cogito:14b` and `cogito:32b`.
+This implementation uses `Gemini 2.5 Pro`, `Claude Sonnet 4`, and `o3` in collaboration and competition or in development mode `gemma3:12b` and `gemma3:27b`.
 
 ![App Demo](assets/app_demo.gif)
 
@@ -95,7 +95,7 @@ Features include:
 #### Prerequisites
 - Python 3.12 or higher
 - ollama version 0.9.5 or higher
-- The ollama models cogito:14b , cogito:32b, and nomic-embed-text:latest
+- The ollama models gemma3:12b , gemma3:27b, and nomic-embed-text:latest
 - A boatload of API keys
 
 #### Install from PyPI (Coming Soon)
@@ -128,9 +128,9 @@ Set up keys for the local LLMs
 COSCIENTIST_DEV="True"
 OPENAI_API_BASE="http://127.0.0.1:11434/v1"
 OLLAMA_BASE_URL="http://127.0.0.1:11434/"
-FAST_LLM="ollama:cogito:14b"
-SMART_LLM="ollama:cogito:32b"
-STRATEGIC_LLM="ollama:cogito:14b"
+FAST_LLM="ollama:gemma3:12b"
+SMART_LLM="ollama:gemma3:27b"
+STRATEGIC_LLM="ollama:gemma3:12b"
 EMBEDDING_PROVIDER="ollama"
 OLLAMA_EMBEDDING_MODEL="nomic-embed-text"
 ```

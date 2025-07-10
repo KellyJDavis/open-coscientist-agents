@@ -62,17 +62,19 @@ _CHEAPER_REMOTE_LLM_POOL = {
 # Local reasoning models are better suited for the scientific reasoning
 # tasks entailed by the Coscientist system.
 _SMARTER_LOCAL_LLM_POOL = {
-    "cogito-32b": ChatOllama(
-	model="cogito:32b",
+    "gemma3-27b": ChatOllama(
+	model="gemma3:27b",
 	validate_model_on_init=True,
 	num_predict=50000,
+	num_ctx=131072,
     ),
 }
 _CHEAPER_LOCAL_LLM_POOL = {
-    "cogito-14b": ChatOllama(
-	model="cogito:14b",
+    "gemma3-12b": ChatOllama(
+	model="gemma3:12b",
 	validate_model_on_init=True,
 	num_predict=50000,
+	num_ctx=131072,
     ),
 }
 
@@ -80,10 +82,10 @@ _SMARTER_LLM_POOL = _SMARTER_LOCAL_LLM_POOL if os.environ.get("COSCIENTIST_DEV")
 _CHEAPER_LLM_POOL = _CHEAPER_LOCAL_LLM_POOL if os.environ.get("COSCIENTIST_DEV") else _CHEAPER_REMOTE_LLM_POOL
 _EMBEDDINGS = OllamaEmbeddings(model="nomic-embed-text") if os.environ.get("COSCIENTIST_DEV") else OpenAIEmbeddings(model="text-embedding-3-small", dimensions=256)
 
-_LITERATURE_REVIEW_AGENT_KEY = "cogito-32b" if os.environ.get("COSCIENTIST_DEV") else "claude-sonnet-4-20250514"
-_META_REVIEW_AGENT_KEY = "cogito-14b"  if os.environ.get("COSCIENTIST_DEV") else "gemini-2.5-flash"
-_SUPERVISOR_AGENT_KEY = "cogito-32b" if os.environ.get("COSCIENTIST_DEV") else "claude-sonnet-4-20250514"
-_FINAL_REPORT_AGENT_KEY = "cogito-32b" if os.environ.get("COSCIENTIST_DEV") else "claude-sonnet-4-20250514"
+_LITERATURE_REVIEW_AGENT_KEY = "gemma3-27b" if os.environ.get("COSCIENTIST_DEV") else "claude-sonnet-4-20250514"
+_META_REVIEW_AGENT_KEY = "gemma3-12b"  if os.environ.get("COSCIENTIST_DEV") else "gemini-2.5-flash"
+_SUPERVISOR_AGENT_KEY = "gemma3-27b" if os.environ.get("COSCIENTIST_DEV") else "claude-sonnet-4-20250514"
+_FINAL_REPORT_AGENT_KEY = "gemma3-27b" if os.environ.get("COSCIENTIST_DEV") else "claude-sonnet-4-20250514"
 
 
 class CoscientistConfig:
